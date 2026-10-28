@@ -57,9 +57,9 @@ Do not offer to migrate. Do not offer "just this once". Empty folders are fine; 
 ## 4. Create the structure
 
 ```bash
-mkdir -p "<vault>/workflow/new" "<vault>/workflow/shortlisted" "<vault>/workflow/processing" \
-         "<vault>/workflow/interviews" "<vault>/workflow/done" \
-         "<vault>/raw/jobs" "<vault>/raw/assets"
+mkdir -p "<vault>/workflow/shortlisted" "<vault>/workflow/processing" \
+         "<vault>/workflow/interviews" \
+         "<vault>/raw/jobs" "<vault>/raw/jobs/done" "<vault>/raw/assets"
 ```
 
 ## 5. Install the package
