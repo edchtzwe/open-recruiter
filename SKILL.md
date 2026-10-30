@@ -1,13 +1,13 @@
 ---
 name: open-recruiter
-description: Set up a dedicated empty Obsidian vault for AI-powered job searching — writes the vault contract, the setup interview, and installs the job-search skills into the user's agent.
+description: Set up a dedicated empty Obsidian vault for AI-powered job searching — lands the vault contract, the setup interview, and the build manual. Skills are authored during setup, never installed.
 ---
 
 # open-recruiter — installer
 
 You are installing open-recruiter. This file is the whole installer. Read it, run it, then the repo is disposable.
 
-open-recruiter is **not** a vault. It is a set of steps that scaffolds a vault the user owns. After setup this repo is irrelevant — the user's agent works from the vault's `AGENTS.md` and the installed skills.
+open-recruiter is **not** a vault. It is a set of steps that scaffolds a vault the user owns. After setup this repo is irrelevant — the user's agent works from the vault's `AGENTS.md` and the skills it authored for itself during setup. This repo ships no skills and no scripts: `package/BLUEPRINT.md` carries specs and pseudocode, and their agent builds everything in its own conventions.
 
 **This works on a dedicated, empty Obsidian vault only.** If it has content, stop. Do not migrate, merge, archive, or "just this once" it. A refusal costs one message; a bad migration costs their work.
 
@@ -81,6 +81,7 @@ What arrives:
 ```
 AGENTS.md      the vault contract, including the setup gate
 BOOTSTRAP.md   the setup interview — deletes itself when setup completes
+BLUEPRINT.md   the build manual — skill specs and script pseudocode; permanent
 index.md       root index
 log.md         audit log, header only
 tasks.md       shared queue, empty
@@ -101,15 +102,7 @@ printf '%s\n' '' "## [$(date +%F)] setup | vault initialised by open-recruiter" 
 
 That is the only content the installer authors. Everything else is copied.
 
-## 7. Install the skills
-
-Copy the skill directories in `<repo>/skills/` into the agent's own skill directory — the folder the runtime actually loads skills from. Find it; do not invent one. If `skills/` is empty or missing, say so and skip this step; skills ship in a later release.
-
-Replace any `<VAULT_PATH>` placeholder inside an installed skill with the absolute vault path.
-
-Do not create a skill directory the runtime will not load.
-
-## 8. Bake the vault into the agent's long-term memory
+## 7. Bake the vault into the agent's long-term memory
 
 Find the file the runtime loads into every session as long-term memory (`MEMORY.md`, `CLAUDE.md`, `.cursorrules`, standing instructions). Do not invent a path. If there is nowhere it will actually load, say so instead of writing a file that does nothing.
 
@@ -130,13 +123,13 @@ Other vaults (personal, notes, projects) are separate entries. Never mix them in
 
 The type line is deliberate: it lets the user add other vaults later with zero conflicts.
 
-## 9. Report and stop
+## 8. Report and stop
 
 Five lines:
 
 - Vault path.
 - Files created — the list from step 5, once.
-- Skills installed — names, or why not.
+- Build manual landed — `BLUEPRINT.md` at the vault root; no skills are installed, the interview makes the agent author them.
 - Memory: the file appended to and the vault path in it — or why not.
 - Next: the vault has `BOOTSTRAP.md`. Setup is not finished. Say "continue setup" and the agent runs the interview.
 
@@ -148,9 +141,10 @@ Then stop. **Do not run the interview here.** The interview lives in the vault a
 - Never run on a vault with content. No exceptions, no partial migration.
 - Never `git init` the vault.
 - Never copy the repo's `SKILL.md`, `README.md`, or `.git` into the vault.
+- Never install skills and never ship scripts. Skills are authored during the interview from the vault's `BLUEPRINT.md`; scripts are written from its pseudocode.
 - Never skip the memory bake silently — if the runtime has nowhere to load it, say so.
 - Never offer to skip setup. It is the setup or it is nothing.
 
 ## After setup
 
-The vault's `AGENTS.md` is the contract; `BOOTSTRAP.md` is the interview. Until `BOOTSTRAP.md` is gone the vault is in setup mode and no job-search work happens. Once it deletes itself, job hunting is between the user and their agent.
+The vault's `AGENTS.md` is the contract, `BOOTSTRAP.md` is the interview, and `BLUEPRINT.md` is the build manual the interview works from. Until `BOOTSTRAP.md` is gone the vault is in setup mode and no job-search work happens. Once it deletes itself, job hunting is between the user and their agent — with the skills that agent authored for itself.
