@@ -92,7 +92,23 @@ Delete this section. Do not revisit.
 
 ---
 
-## 5. Skill authoring circuit
+## 5. Job preferences and ranking
+
+Ask, one question at a time, and record the user's decisions in `resume-master.md` under `## Job preferences`:
+
+- Accepted employment types (for example, permanent, contract or fixed-term, in any combination).
+- Acceptable locations, commute constraints and work modes (onsite, hybrid and/or remote).
+- Compensation floor, including currency and pay period, or an explicit decision that there is no floor. Confirm how it relates to any range already recorded under `## Position`.
+
+Confirm the seniority band already recorded under `## Position`; resolve any uncertainty with the user. Do not assume preferences from the resume, location or market.
+
+Explain the default ranking rubric in `BLUEPRINT.md` Section 2: stack and skill alignment 40%, scope and level 25%, compensation and role type 20%, and location and work mode 15%. Ask whether to use it or change its dimensions or weights. Record the chosen rubric and weights under `## Job preferences`; if changed, confirm the weights total 100%. The user may revise it later.
+
+Only delete this section when the decisions are recorded. If a preference remains unknown, record that explicitly and leave this section in place until the user resolves it; do not invent an answer.
+
+---
+
+## 6. Skill authoring circuit
 
 The vault ships no skills and no scripts. Every skill this system needs is authored here, by you, in your own runtime's conventions. `BLUEPRINT.md` holds the specs and script pseudocode — one section per skill. Nothing in it is copied; everything in it is built from.
 
@@ -112,9 +128,9 @@ Write the `Capabilities` record, complete every `BLUEPRINT.md` section, then del
 
 ---
 
-## 6. Finalise
+## 7. Finalise
 
-- Read `resume-master.md` back. It must have: Identity, Target, Career highlights, Search targets, Position, Capabilities. Check that the decisions are recorded and resume-derived details used in setup have been confirmed.
+- Read `resume-master.md` back. It must have: Identity, Target, Career highlights, Search targets, Position, Job preferences, Capabilities. Check that the decisions are recorded and resume-derived details used in setup have been confirmed. Verify accepted employment types, locations and commute constraints, work modes, seniority band, compensation floor or explicit no-floor decision, and the chosen ranking rubric and weights.
 - If a required section is still present in this file, complete it before finalising. If required output is missing or unconfirmed but its section has already been deleted, stop and resolve the gap with the user before deleting this file; do not silently treat it as complete.
 - Confirm every `BLUEPRINT.md` skill section has a completed skill: stub filled, scripts written, acceptance lines run. `BLUEPRINT.md` is permanent and stays in the vault.
 - Confirm the vault has nothing else in it beyond the known structure.

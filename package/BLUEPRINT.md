@@ -15,13 +15,13 @@ Nothing in open-recruiter ships as a skill or a script. This vault ships **this 
 
 For each skill section in this file, in order:
 
-1. Open the section. Read the script pseudocode and the skill spec.
+1. Open the section. Read the skill spec, and the script pseudocode if the section ships any.
 2. Create the skill folder and a `SKILL.md` stub in your runtime's own skill conventions. If your runtime has no skill system, keep the written spec as a vault page instead — this is decided at setup, not invented later.
-3. Write the script(s) from the pseudocode. The script gets live-page capability **only if the runtime actually has it**; otherwise it must degrade the way the pseudocode says, not fail.
-4. Run each script's acceptance line once. Fix until it passes.
-5. Return to the stub and fill out `SKILL.md` per the skill spec. The circuit is complete when the skill knows how to run its script and how to behave without the capability.
+3. If the section ships script pseudocode, write the script(s) from it. The script gets live-page capability **only if the runtime actually has it**; otherwise it must degrade the way the pseudocode says, not fail. Skip this step for a skill-only section.
+4. If the section has scripts, run each script's acceptance line once. Fix until it passes. A skill-only section ships behavioural assertions instead — they are checked against the finished skill, not executed.
+5. Return to the stub and fill out `SKILL.md` per the skill spec. A section with scripts is complete when the skill knows how to run its script and how to behave without the capability. A skill-only section is complete when every behavioural assertion holds.
 
-Order matters: the script comes first. A skill without its script is useless.
+Scripts exist where the work is mechanical — loops, matching, deterministic transformation. A skill whose work is judgement and conversation needs none, and its section says so. Where a section does ship scripts, the script comes first: a skill whose script is missing is useless.
 
 ---
 
@@ -73,3 +73,58 @@ Input: candidate identities from Script 1. Identity = source name, listing id or
 - **Every write ends in one log line** in `log.md` naming `raw/jobs/` and the file.
 - **Report at run end:** classes, sources and per-source statuses; raw candidates cast; new records written; duplicates skipped; blocked or unavailable sources; shortfall against N. Then suggest the obvious next step — rank the new finds, adjust the search targets, or run again.
 - **Never pad, never guess, never invent.** A short honest run beats a full fabricated one.
+---
+
+## Section 2 — rank-jobs skill
+
+**Delivers:** one skill. **No scripts** — ranking is judgement work: reading each listing against the user's profile is comprehension, not computation, and a script would only multiply numbers the skill itself produced. This section carries behavioural assertions instead of an acceptance line.
+
+### Skill spec — what the written rank-jobs skill must do
+
+- **Reads** every job file under `raw/jobs/` and the user's recorded profile from `resume-master.md`. Nothing about the user is assumed; every target, floor and preference comes from the profile at run time.
+
+**Hard filters — four axes, values read from `resume-master.md`:**
+
+Every axis is a dimension, not a default answer. The skill filters against what the user recorded. A user with nothing recorded on an axis is asked — never assumed.
+
+1. **Role type.** The employment types the user admits — permanent, contract, fixed-term, or any mix. Listings outside the recorded set are cut. "Permanent only" is one possible answer, not the rule.
+2. **Location and work mode.** The user's recorded locations, acceptable commutes, and modes (onsite / hybrid / remote). Listings outside are cut.
+3. **Level.** The seniority band the user is pursuing. Clearly-below-band roles are cut. Clearly-above-band roles are kept and flagged, not cut — the user decides what is out of reach.
+4. **Compensation floor.** The user's recorded floor. A listing that *states* comp below the floor is cut. A listing that *does not state* comp is never cut on comp — see flags below.
+
+**Composite score — default weights, tunable with the user:**
+
+Hard filters decide membership; the composite orders what survived.
+
+- Stack and skill alignment — **40%**
+- Scope, autonomy and level signal — **25%**
+- Compensation and role type — **20%**
+- Location and work mode — **15%**
+
+These four dimensions at these weights are the default rubric — chosen because they track what predicts a good move for most individual-contributor engineers. They are defaults, not doctrine: the user may reweight or replace dimensions, and the skill scores by whatever rubric the user records. Every sub-score is evidence-backed from the listing text or the profile, or explicitly marked unknown — never invented to make the arithmetic work.
+
+**Flags, not cuts:**
+
+A listing that survives the hard filters is never cut for a soft misalignment. Stack mismatch, undisclosed compensation, an employer archetype the user prefers to avoid — each is a flag carried on the listing and shown alongside its score. The cut list holds hard-filter failures only. The user decides what soft risk to accept.
+
+**Output:**
+
+1. **Shortlist.** For each surviving listing, a working document in `workflow/shortlisted/` — created there per the vault contract — linking to its file in `raw/jobs/`, carrying the composite score, the sub-score evidence, and the flags. The listing file itself is never edited by this skill; `raw/jobs/` is write-once.
+2. **The brief.** One executive brief for the top-ranked listing: company and role; compensation quoted verbatim from the listing text — never an inferred, rounded, or reconstructed bound; if the listing states no comp, say so plainly. Then why it ranks first today, two or three alignment points matching the user's recorded achievements against the role's stated needs, the risks, and the listing link.
+3. **Next step.** Suggest the obvious move — draft the tailored resume for the top pick, adjust the rubric or search targets, or re-run discovery if the shortlist is thin. Suggest only; the user acts.
+
+**Every write ends in one log line** naming the file touched.
+
+**Never invent, never pad.** A ranked three beats a fabricated ten.
+
+### Behavioural assertions — rank-jobs
+
+Checked against the finished skill. Nothing here executes at build time.
+
+1. Two users with different recorded role-type preferences produce different cut decisions on the same contract listing — cut for the permanent-only user, kept for the user whose record admits contract.
+2. A listing stating comp below the user's recorded floor is cut. The same listing against a user with no recorded floor is kept (or the user is asked) — never silently cut on an assumed floor.
+3. A listing with no stated comp survives to the shortlist, flagged "comp not stated". No bound is inferred anywhere in the pipeline.
+4. Identical inputs rank identically across two runs.
+5. The brief's compensation line matches the listing text exactly, or states that comp is not disclosed.
+6. A stack-mismatched listing that passes the hard filters appears on the shortlist with its flag and a score — it never appears in the cut list.
+
