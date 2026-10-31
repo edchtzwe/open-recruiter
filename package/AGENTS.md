@@ -1,7 +1,7 @@
 ---
 type: schema
 created: 2026-10-27
-updated: 2026-10-28
+updated: 2026-10-30
 tags: [schema, meta]
 ---
 
@@ -29,6 +29,7 @@ Compiled career state, not a chat log. Each write lands where a future session c
 AGENTS.md              this contract
 resume-master.md       the user's master data — source of truth for every resume
 BOOTSTRAP.md           setup interview (transient; gone when setup completes)
+BLUEPRINT.md           the build manual — skill specs and script pseudocode (permanent; skills and scripts are authored from it, never shipped)
 index.md               root index — pipeline and master data
 log.md                 append-only audit of operations on this vault
 tasks.md               shared queue

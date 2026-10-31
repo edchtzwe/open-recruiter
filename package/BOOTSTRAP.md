@@ -92,10 +92,31 @@ Delete this section. Do not revisit.
 
 ---
 
-## 5. Finalise
+## 5. Skill authoring circuit
 
-- Read `resume-master.md` back. It must have: Identity, Target, Career highlights, Search targets, Position. Check that the decisions are recorded and resume-derived details used in setup have been confirmed.
+The vault ships no skills and no scripts. Every skill this system needs is authored here, by you, in your own runtime's conventions. `BLUEPRINT.md` holds the specs and script pseudocode — one section per skill. Nothing in it is copied; everything in it is built from.
+
+First, one question, category-level only: **can this agent browse live pages / drive a browser?** Never name a tool, never suggest one, never point at where to find one — that research is the user's. Record the answer in `resume-master.md` under `## Capabilities`.
+
+Then run the circuit once for every skill section in `BLUEPRINT.md`:
+
+1. Open the section. Read the script pseudocode and the skill spec.
+2. Create the skill folder wherever this runtime actually loads skills from — find it, do not invent one — and stub the `SKILL.md` in this runtime's own convention.
+3. Write the script(s) from the pseudocode, in whatever language and tooling are native here. If a capability a section needs is absent, build the degraded path the pseudocode describes and say so plainly in the skill.
+4. Run each script's acceptance line once. In degraded mode, run it against whatever listing is reachable and record what could not be exercised.
+5. Return to the stubbed `SKILL.md` and fill it out from the section's spec. That skill's circuit is complete: the script exists and the skill knows how to run it.
+
+Record where each finished skill lives in the `## Capabilities` section as you go, so interrupted authoring resumes without rebuilding what already exists. Author every skill before finalising; `BLUEPRINT.md` survives this file's deletion and is the rebuild reference later.
+
+Write the `Capabilities` record, complete every `BLUEPRINT.md` section, then delete this section.
+
+---
+
+## 6. Finalise
+
+- Read `resume-master.md` back. It must have: Identity, Target, Career highlights, Search targets, Position, Capabilities. Check that the decisions are recorded and resume-derived details used in setup have been confirmed.
 - If a required section is still present in this file, complete it before finalising. If required output is missing or unconfirmed but its section has already been deleted, stop and resolve the gap with the user before deleting this file; do not silently treat it as complete.
+- Confirm every `BLUEPRINT.md` skill section has a completed skill: stub filled, scripts written, acceptance lines run. `BLUEPRINT.md` is permanent and stays in the vault.
 - Confirm the vault has nothing else in it beyond the known structure.
 
 Only when every section is complete and its output is recorded, delete this file.
