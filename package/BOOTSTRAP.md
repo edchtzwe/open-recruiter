@@ -23,7 +23,7 @@ When the last section is complete, delete this file.
 
 ## 0. Resume seed
 
-Ask whether the user has a resume they can share. If they do, read it and seed `resume-master.md` with the information it contains, organised under the relevant setup headings. Preserve useful career details for later tailoring. Mark extracted information as unconfirmed until the user verifies it; a resume may be incomplete, outdated or wrong. Do not invent missing facts.
+Ask whether the user has a resume they can share. A user-supplied resume is source material, not a vault rendering — reading it once to seed this section is within AGENTS.md rule 10. If they do, read it and seed `resume-master.md` with the information it contains, organised under the relevant setup headings. Once seeded, the PDF is never read again; `resume-master.md` owns the data from then on. Preserve useful career details for later tailoring. Mark extracted information as unconfirmed until the user verifies it; a resume may be incomplete, outdated or wrong. Do not invent missing facts.
 
 If they do not have a resume, start `resume-master.md` from scratch and continue with the same sections below. If a provided resume cannot be read, explain the issue and ask for a readable version or to continue without it.
 

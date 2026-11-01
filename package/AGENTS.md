@@ -55,7 +55,7 @@ workflow/interviews/   interview scheduled — prep, research, follow-ups
 7. **Say when you don't know.** A documented gap is useful; an invented bridge gets someone rejected.
 8. **This is not a general vault.** No personal notes, projects, or unrelated knowledge. It confuses agents and risks leaking private data.
 9. **Never apply, never contact.** No submission, no form-filling, no email and no message to a recruiter or employer on the user's behalf. The agent prepares the package and hands it over; applying is the user's job. `processing/` means the user applied and said so — nothing moves there on an assumption.
-10. **PDFs are outputs, never inputs.** The markdown is the document; the PDF is a rendering of it. An agent may verify a PDF structurally — exists, non-zero, page count, theme resolved, text layer present — and never reads, quotes, summarises or attaches its contents. If the markdown and the PDF disagree, the PDF is stale and is regenerated.
+10. **Vault-rendered PDFs are outputs, never inputs.** Provenance decides, not format: the markdown is the document; the PDF is a rendering of it. An agent may verify a PDF structurally — exists, non-zero, page count, theme resolved, text layer present — and never reads, quotes, summarises or attaches its contents. If the markdown and the PDF disagree, the PDF is stale and is regenerated. A PDF the user supplies — a resume shared at `BOOTSTRAP.md` §0, a listing pasted as PDF — is source material, not a rendering: read it once, extract it into markdown, and from then on this rule applies to any PDF rendered from that markdown. The source PDF is never an input again.
 
 ## Workflow stages
 
