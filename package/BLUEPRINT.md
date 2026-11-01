@@ -128,3 +128,92 @@ Checked against the finished skill. Nothing here executes at build time.
 5. The brief's compensation line matches the listing text exactly, or states that comp is not disclosed.
 6. A stack-mismatched listing that passes the hard filters appears on the shortlist with its flag and a score — it never appears in the cut list.
 
+---
+
+## Section 3 — write-resume skill
+
+**Delivers:** one skill plus one script. Choosing and phrasing bullets against a single listing is judgement work, so the skill writes the document. Producing the PDF is mechanical, so a script does that. They ship together: a resume nobody can open is not a resume.
+
+**Every resume is a pair** — `<stem>-resume.md` and its PDF, in the job's stage folder. The markdown is canonical. Revisions edit the markdown and re-render; the PDF is never edited by hand, never patched, never read.
+
+### Script — document render (pseudocode)
+
+Inputs: source markdown path, theme name, output path, document kind (resume or cover letter).
+
+1. **Read** the source markdown. Empty input is a hard failure.
+2. **Convert** to HTML with the runtime's own markdown converter. If it has none, write a minimal one covering headings `h1`–`h4`, paragraphs, bold, italics, links, unordered lists and horizontal rules — those are the only constructs these documents use. Anything else is emitted as plain text rather than silently dropped.
+3. **Resolve the theme.** Resumes: `raw/assets/resume-themes/<theme>.css`. Cover letters: `raw/assets/cover-letter-themes/<theme>.css`. A theme that does not resolve is a **hard failure**: exit non-zero, name the theme, name both folders searched. **Never fall back to a default.** A silently restyled document is worse than no document, because nobody notices it happened.
+4. **Assemble one self-contained HTML document.** Stylesheet inlined in a `<style>` element. No external requests of any kind — no remote fonts, no remote CSS, no remote images. It must render identically with the network off.
+5. **Render to PDF.** A4. Backgrounds printed. No header or footer furniture. Page margins come from the stylesheet's `@page` rule, not from the renderer's defaults.
+6. **No PDF path in this runtime?** Write the styled HTML beside the source, say so plainly, and tell the user to print it to PDF. Expected outcome, not an error.
+7. **Emit** the output path, the theme used, the page count, and whether an extractable text layer is present.
+
+**Verification is structural, never textual.** Existence, non-zero size, page count, theme resolved, text layer present. The script never opens, parses, quotes or prints the document's contents.
+
+**Acceptance line:** render a two-page sample with the sample theme — output exists, is non-zero, is two pages, the theme resolves, the text layer is extractable. Then render once with a theme name that does not exist — the script exits non-zero and names both folders it searched. No step in either run reads the PDF's contents.
+
+### Theme contract
+
+A theme is a print stylesheet and nothing else. The vault ships one sample; the user builds more with their agent. Themes work only because the renderer's HTML is fixed, so that structure is part of the contract:
+
+- `h1` — the name line: the candidate's name on a resume, the letterhead on a letter.
+- `h1 + p` — the contact line directly beneath it.
+- `h1 + p + p` — the target line on a cover letter ("Application for <role> — <company>").
+- `h2` — a section heading.
+- `h3` — employer and role, or a dated entry line.
+- `h4` — a secondary line: project name, sub-heading.
+- `p > em` — a meta line: dates, location, one row of context under a heading.
+- `ul` / `li` — bullets.
+- `hr` — a section rule, removable for space.
+- `a`, `strong` — links and emphasis.
+
+A theme must: target A4 print; use system font stacks only, never a webfont; contain no script and no external reference; and stay legible in monochrome, because printing and applicant tracking both strip colour.
+
+### Skill spec — what the written write-resume skill must do
+
+- **Reads** `resume-master.md`. In tailored mode it also reads the job document in the stage folder and the listing it links to in `raw/jobs/`. Nothing about the user is assumed and nothing is invented — no employer, title, date, metric or technology that the master file does not record.
+- **Two modes.** Tailored: one listing, one application, bullets chosen and ordered for that listing. Public general: `resume-public-general.md` at the vault root, for job boards and a profile, written once and re-rendered when the master changes.
+- **Document shape.** Name and contact header; a title and short summary; four or five core strengths; experience in reverse chronological order with three to five evidence bullets each; two or three selected projects; a final line for citizenship, location and work mode. No standalone skills, tools or technology list — capability is shown through the work, never asserted through a keyword row.
+- **Bullets.** Outcome first, then the measure, then the mechanism. A bullet that cannot state an outcome or a measure is rewritten or dropped; no task-board phrasing, no invented number.
+- **Two pages.** The render reports the page count. Over-length is fixed by compressing repeated claims and redundant rules first, and by cutting evidence last. The skill never edits the PDF to fit.
+- **Writes both files into the job's stage folder**, named from the job document's stem: `<stem>-resume.md`, and a recipient-facing `<candidate name>-Resume-<company>.pdf`.
+- **Verifies structurally**, exactly as the script does: exists, non-zero, page count, theme, text layer. It reports the markdown path and the page count — it never reads the PDF back.
+- **Every write ends in one log line** in `log.md` naming the stage folder and the files.
+- **Reports** both paths, the page count, the theme, and anything that looks thin, repeated or unaligned with the listing.
+- **Never submits anything.** Preparing a document is the end of this skill's authority.
+
+### Behavioural assertions — write-resume
+
+Checked against the finished skill. Nothing here executes at build time.
+
+1. Every experience bullet in a generated resume traces to a fact recorded in `resume-master.md` — employer, title, dates, metric. A fact that is absent is absent from the output, not softened into a claim.
+2. A resume that would run three pages is compressed before evidence is cut, and the reported page count comes from the render, not from an estimate.
+3. Revising a resume rewrites its markdown and its PDF together; no second PDF appears and no orphaned PDF survives from the previous revision.
+4. Rendering with a theme name that does not exist fails visibly and is reported as a failure — never as success with a fallback style.
+5. The skill's report cites the markdown path and the page count. It never quotes, summarises or attaches the PDF.
+6. A tailored resume shares its job document's stem; its PDF is named for the recipient, not for the vault.
+
+---
+
+## Section 4 — write-cover-letter skill
+
+**Delivers:** one skill. **No scripts** — it reuses Section 3's render script unchanged, which is why the themes come in pairs.
+
+### Skill spec — what the written write-cover-letter skill must do
+
+- **Reads the tailored resume, not the master file.** Inputs: `<stem>-resume.md`, the job document, and the listing it links to. The letter is a projection of the resume — a shorter, targeted restatement of what the resume already proves. If the letter needs a fact the resume does not carry, stop and surface the gap; the resume is revised first, then the letter.
+- **One page.** A letter that needs two is a letter that has not been cut.
+- **Shape.** The same header as the resume, name and contact; a target line naming the role and company; a salutation; an opening that gives one specific reason for this application; two or three body paragraphs, each anchored to an achievement already in the resume; a close naming the next step; a signature.
+- **Same theme name as the resume.** A package that renders in two different styles looks assembled from two different people. The render script resolves the cover-letter variant of the name.
+- **Writes** `<stem>-cover-letter.md` and `<candidate name>-Cover-Letter-<company>.pdf` into the same stage folder.
+- **Never invents.** No metric, employer, date or claim that is not in the resume. No flattery that outruns the evidence.
+- **Verifies structurally** and logs one line, exactly as in Section 3.
+- **Never submits, never contacts.** The package is handed to the user.
+
+### Behavioural assertions — cover-letter
+
+1. Every claim in a generated letter appears in the resume it was generated from. Where the letter wanted a fact the resume lacked, the run stopped and said so.
+2. The letter renders in the theme named by the resume — never the default, never a different one.
+3. A letter that would exceed one page is cut, not shrunk by editing the PDF.
+4. The letter's header matches the resume's header exactly: same name line, same contact line.
+5. The skill's report cites the markdown path and the page count. It never reads the PDF.

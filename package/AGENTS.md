@@ -28,6 +28,7 @@ Compiled career state, not a chat log. Each write lands where a future session c
 ```
 AGENTS.md              this contract
 resume-master.md       the user's master data — source of truth for every resume
+resume-public-general.md  the untailored resume for job boards and profiles
 BOOTSTRAP.md           setup interview (transient; gone when setup completes)
 BLUEPRINT.md           the build manual — skill specs and script pseudocode (permanent; skills and scripts are authored from it, never shipped)
 index.md               root index — pipeline and master data
@@ -35,8 +36,10 @@ log.md                 append-only audit of operations on this vault
 tasks.md               shared queue
 raw/jobs/              job listings as markdown, passed screening
 raw/jobs/done/         archived jobs: stale (>20 days), rejected, expired
-raw/assets/            resume themes, cover-letter themes, PDFs, screenshots
-workflow/shortlisted/  interested, ready to apply — working doc created here
+raw/assets/            resume and cover-letter themes, screenshots, source documents
+raw/assets/resume-themes/        one stylesheet per resume theme
+raw/assets/cover-letter-themes/  the same theme names, for letters
+workflow/shortlisted/  interested, ready to apply — working bundle created here
 workflow/processing/   application sent, awaiting response
 workflow/interviews/   interview scheduled — prep, research, follow-ups
 ```
@@ -45,12 +48,14 @@ workflow/interviews/   interview scheduled — prep, research, follow-ups
 
 1. **`raw/jobs/` content is write-once.** A job listing is never edited after it lands. Location may move to `raw/jobs/done/` for archival; content stays unchanged.
 2. **`resume-master.md` is the source of truth.** Never invent experience, dates, or numbers. If it is not there, ask.
-3. **`workflow/` is the pipeline.** A job exists in exactly one stage at a time. The working document moves forward; it does not spawn copies.
+3. **`workflow/` is the pipeline.** A job exists in exactly one stage at a time. The working **bundle** moves forward as a folder — job document, resume, letter, PDFs and all — never split, never copied.
 4. **Every write ends in one log line** in `log.md`, naming the stage or file it touched.
 5. **Archive, never delete.** Stale, rejected, or expired jobs move from `raw/jobs/` to `raw/jobs/done/`. `raw/jobs/` is never pruned.
 6. **Cite the listing.** A claim about a role names its file in `raw/jobs/` (or `raw/jobs/done/` if archived).
 7. **Say when you don't know.** A documented gap is useful; an invented bridge gets someone rejected.
 8. **This is not a general vault.** No personal notes, projects, or unrelated knowledge. It confuses agents and risks leaking private data.
+9. **Never apply, never contact.** No submission, no form-filling, no email and no message to a recruiter or employer on the user's behalf. The agent prepares the package and hands it over; applying is the user's job. `processing/` means the user applied and said so — nothing moves there on an assumption.
+10. **PDFs are outputs, never inputs.** The markdown is the document; the PDF is a rendering of it. An agent may verify a PDF structurally — exists, non-zero, page count, theme resolved, text layer present — and never reads, quotes, summarises or attaches its contents. If the markdown and the PDF disagree, the PDF is stale and is regenerated.
 
 ## Workflow stages
 
@@ -62,7 +67,21 @@ A job enters the pipeline when the user creates a working document in `workflow/
 
 When the journey ends (signed, rejected, expired), archive the `raw/jobs/` entry to `raw/jobs/done/` and update the working doc with the outcome.
 
-**One doc, one journey.** The document is the pipeline state.
+**A bundle, not a document.** The stage folder holds the job document and everything generated for it, flat — no subfolders. Every artifact is named from the job document's stem, so the group is obvious without a filing system:
+
+```
+acme-senior-platform-engineer.md
+acme-senior-platform-engineer-resume.md
+acme-senior-platform-engineer-resume.pdf
+acme-senior-platform-engineer-cover-letter.md
+acme-senior-platform-engineer-cover-letter.pdf
+```
+
+The PDFs are the one exception: they carry the candidate's name and the employer, because a recruiter sees the filename in an inbox — `Name-Resume-Company.pdf`. Everything vault-facing uses the stem.
+
+**The bundle moves when the user says the application was sent.** Not when the resume is drafted, not when the letter is written. A job sits in `shortlisted/` with its whole package beside it until the user confirms. `processing/` is a claim about the world, and only the user can make it.
+
+**One job, one journey.** The bundle is the pipeline state.
 
 ## `raw/jobs/` rules
 
@@ -94,8 +113,11 @@ why_survived: <one-line reason this passed screening>
 ## Resume rules
 
 - Tailor from `resume-master.md` only. Never add experience that is not recorded there.
-- One resume per application, named `<company>-<role>-<date>`.
+- One tailored resume per job, generated into that job's stage folder and named from the job document's stem.
+- A resume is always a pair: the markdown is canonical, the PDF is rendered from it. Revisions edit the markdown and re-render; a PDF is never edited by hand.
+- `resume-public-general.md` at the vault root is the untailored version, for job boards and profiles.
 - A tailored resume never overwrites the master.
+- A cover letter is generated from the tailored resume, not from the master file, and renders in the resume's theme.
 
 ## Localization
 
