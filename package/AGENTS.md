@@ -1,7 +1,7 @@
 ---
 type: schema
 created: 2026-10-27
-updated: 2026-10-30
+updated: 2026-11-02
 tags: [schema, meta]
 ---
 
@@ -41,7 +41,7 @@ raw/assets/resume-themes/        one stylesheet per resume theme
 raw/assets/cover-letter-themes/  the same theme names, for letters
 workflow/shortlisted/  interested, ready to apply — working bundle created here
 workflow/processing/   application sent, awaiting response
-workflow/interviews/   interview scheduled — prep, research, follow-ups
+workflow/interviews/   interview stage — prep, research, follow-ups, outcomes
 ```
 
 ## Hard rules
@@ -66,6 +66,45 @@ A job enters the pipeline when the user creates a working document in `workflow/
 - `interviews/` — interview scheduled. Same doc moves here, adds prep, company research, questions, follow-ups, outcomes.
 
 When the journey ends (signed, rejected, expired), archive the `raw/jobs/` entry to `raw/jobs/done/` and update the working doc with the outcome.
+
+### Interview sub-state
+
+The folder is the stage. `interview_state` describes where inside the interview stage the bundle sits, so an agent can tell "preparing for an interview" from "waiting on the employer" without guessing.
+
+| State | Meaning | Required |
+|---|---|---|
+| `invited` | An interview is scheduled; prep is owed. | `interview_date` when known |
+| `awaiting` | At least one interview is done; no next round scheduled; waiting on the employer. | — |
+| `offer` | An offer has been received. | — |
+| `closed` | Rejected, withdrawn, or otherwise finished. | — |
+
+Set the fields in the working job document's frontmatter:
+
+```yaml
+stage: interviews
+interview_state: invited | awaiting | offer | closed
+interview_date: YYYY-MM-DD   # next scheduled interview; omit when unknown
+```
+
+- A new round moves `awaiting` back to `invited` and updates `interview_date`.
+- The sub-state never moves the bundle. Folder movement still follows rule 3 and the user's confirmation.
+- `offer` and `closed` are recorded here; the bundle's next move follows the archive rules.
+
+### Interview log
+
+The working job document carries an `## Interview log` section. One row per round, appended, never rewritten:
+
+```markdown
+| Date | Round | Format | Interviewer | Questions / themes | Outcome |
+|---|---|---|---|---|---|
+| YYYY-MM-DD | 1 | video | <name or unknown> | <what was asked> | <advanced / awaiting / rejected> |
+```
+
+The log is the history. `interview_state` is the current state. Neither replaces the other.
+
+**Interview prep notes.** One file per bundle: `<stem>-interview-prep.md`, in the same flat stage folder. Never `<company>.md` — a company can have several roles and a company name is not a bundle identity. The prep file holds research, likely questions, mapped evidence, gaps, questions to ask, logistics and debrief notes. The job document remains the state and log.
+
+**Interview-prep target.** The skill requires one target bundle. With no target it lists the interview stage and stops. It never guesses, never preps every bundle, and never moves a bundle on assumption.
 
 **A bundle, not a document.** The stage folder holds the job document and everything generated for it, flat — no subfolders. Every artifact is named from the job document's stem, so the group is obvious without a filing system:
 
@@ -125,7 +164,7 @@ Job sources are region-specific. During setup, the user provides their region an
 
 ## Page format
 
-Markdown with YAML frontmatter. `type`, `created`, `updated` required; `company`, `role`, `url`, `stage`, `fit` where they apply.
+Markdown with YAML frontmatter. `type`, `created`, `updated` required; `company`, `role`, `url`, `stage`, `fit` where they apply. `interview_state` and `interview_date` apply only at `stage: interviews`.
 
 ```markdown
 ---
@@ -135,7 +174,9 @@ updated: YYYY-MM-DD
 company: <company>
 role: <role title>
 url: <listing url>
-stage: new
+stage: interviews
+interview_state: invited
+interview_date: YYYY-MM-DD
 ---
 ```
 

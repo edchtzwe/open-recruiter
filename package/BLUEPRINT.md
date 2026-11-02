@@ -217,3 +217,137 @@ Checked against the finished skill. Nothing here executes at build time.
 3. A letter that would exceed one page is cut, not shrunk by editing the PDF.
 4. The letter's header matches the resume's header exactly: same name line, same contact line.
 5. The skill's report cites the markdown path and the page count. It never reads the PDF.
+
+---
+
+## Section 5 — interview-prep skill
+
+**Delivers:** one skill. **No scripts** — interview preparation is research, judgement and rehearsal; fetching pages is the runtime's own web work, not a mechanical transformation worth a shipped script.
+
+**Runs only when an interview is booked.** This is not pre-application research. The target is already at `workflow/interviews/`; if it is not, stop and offer to move it on the user's confirmation.
+
+### Target resolution
+
+1. If the user names a target — stem, company + role, or listing URL — resolve it to exactly one bundle in `workflow/interviews/`.
+2. Ambiguous match → list the matching bundles and ask. Never choose the first.
+3. No target → list every bundle in `workflow/interviews/`, grouped by `interview_state`, and stop.
+4. Target in `shortlisted/` or `processing/` → do not prep in place. Say the bundle is not at the interview stage and offer to move it only on the user's confirmation.
+5. No matching bundle anywhere → ask for the company, role, or listing URL. Never create a new job record from memory.
+
+### Inventory mode — no target specified
+
+List each bundle, one line, with company, role, state, next interview date and next action. Group in this order:
+
+1. `invited` — prep owed; soonest interview first.
+2. `awaiting` — interview done; follow-up due.
+3. `offer` — decision or negotiation, outside this skill.
+4. `closed` — no action.
+
+After the list, ask which bundle to open. Do not write a prep note, do not research, and do not choose a "best" target.
+
+### Two modes
+
+- **`invited` → prep.** Prepare for the next round.
+- **`awaiting` → debrief.** Capture what happened and prepare the follow-up.
+- **`offer` → stop.** Negotiation and decision are outside this skill.
+- **`closed` → stop.** No prep.
+
+The state decides the mode. The skill does not guess from a company name or a date.
+
+### Prep mode
+
+Inputs:
+
+- the working job document in `workflow/interviews/`
+- the listing it links to in `raw/jobs/` — read-only
+- `resume-master.md`
+- any existing `<stem>-interview-prep.md`
+
+Research the role, not the company's entire history. Cover:
+
+- **Company snapshot** — what it sells, who buys it, size and stage if public, recent news that changes the role's context.
+- **Product and customers** — what the person in this role would actually work on.
+- **Competitors and market position** — only what sharpens the role read.
+- **Interviewer background** — public professional history, when available.
+- **Interview format and round** — from the job document or the user.
+- **Likely questions** — role-specific, level-specific and behavioural.
+- **The user's evidence** — three to five concrete stories from `resume-master.md`, mapped to the likely questions.
+- **Gaps** — questions the user cannot answer from recorded evidence.
+- **Questions to ask** — specific to the role, team, product and stage.
+- **Logistics** — date, time, location or link, format, who is attending.
+
+Every factual claim about the company, product, interviewer or market cites a source and a date. Anything not verifiable is marked unknown. Never fill a gap with a plausible-sounding invention. If the runtime has no live web access, say so and produce a research plan from the job document and public sources instead of a fabricated company profile.
+
+### Debrief mode
+
+Capture:
+
+- the questions actually asked
+- what landed, with the evidence used
+- what did not land, and why
+- gaps to close before the next round
+- the interviewer's signals — next steps, timeline, concerns
+- a follow-up message draft, for the user to send; never send it
+
+Update the job document's interview log. Set `interview_state` to `awaiting` if no next round is scheduled. If a next round is scheduled, set it to `invited` and update `interview_date`.
+
+### Output
+
+Write one file in the bundle's stage folder:
+
+```
+<stem>-interview-prep.md
+```
+
+Suggested shape:
+
+```markdown
+# <Company> — <Role> — Interview prep
+
+## Interview
+- Date / round / format / interviewer(s) / logistics
+
+## Company snapshot
+- What they sell, who buys, size and stage, recent context — each with source and date
+
+## Role read
+- What the role owns, what success looks like, likely pain points
+
+## Likely questions
+- Role-specific, level-specific, behavioural
+
+## Evidence map
+| Likely question | Evidence from resume-master.md | Gap? |
+|---|---|---|
+
+## Questions to ask
+- Specific to the role, team, product and stage
+
+## Gaps
+- What the user cannot yet answer from recorded evidence
+
+## Debrief
+- Filled after the interview: questions asked, what landed, what did not, follow-up
+```
+
+Also update the working job document:
+
+- `updated`
+- `interview_state`
+- `interview_date` when a next interview is scheduled
+- the `## Interview log` row when an interview happened or a new round is booked
+
+Every write ends in one log line in `log.md` naming the stage folder and the files. The raw listing is never edited.
+
+### Behavioural assertions — interview-prep
+
+1. With no target, the skill lists every bundle in `workflow/interviews/`, grouped by state and sorted by urgency, writes nothing, and asks which one to open.
+2. With an ambiguous target — two roles at one company — the skill lists the matches and asks; it never selects the first.
+3. With a target still in `shortlisted/` or `processing/`, the skill stops, says it is not at the interview stage, and offers to move it only on confirmation.
+4. With `interview_state: invited`, the skill writes `<stem>-interview-prep.md` in the bundle's stage folder and updates the job document's state, date and log; the raw listing is unchanged.
+5. With `interview_state: awaiting`, the skill runs debrief mode, records the questions actually asked and the gaps, and drafts a follow-up without sending it.
+6. A prep note for two roles at the same company produces two distinct `<stem>-interview-prep.md` files; neither is named `<company>.md`.
+7. Every company, product, interviewer or market claim in a prep note has a source and a date, or is explicitly marked unknown; no claim is invented.
+8. When the runtime has no live web access, the skill says so and returns a research plan; it does not fabricate a company profile.
+9. The skill never sends a message, contacts an interviewer, applies for a role, or moves a bundle on assumption; any move is confirmed by the user first.
+10. `offer` and `closed` states stop the skill rather than triggering prep.
