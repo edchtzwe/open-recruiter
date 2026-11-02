@@ -20,8 +20,8 @@ Root index. Read this first, then open what you need.
 - `raw/jobs/` — listings as markdown, passed screening (working set)
 - `raw/jobs/done/` — archived: stale, rejected, expired
 - `workflow/shortlisted/` — worth applying
-- `workflow/processing/` — applied or interviewing
-- `workflow/interviews/` — per-company prep
+- `workflow/processing/` — applied, awaiting response
+- `workflow/interviews/` — interview stage; prep notes and interview log
 
 ## Records
 
