@@ -169,6 +169,22 @@ A theme is a print stylesheet and nothing else. The vault ships one sample; the 
 
 A theme must: target A4 print; use system font stacks only, never a webfont; contain no script and no external reference; and stay legible in monochrome, because printing and applicant tracking both strip colour.
 
+### Theme lint
+
+The contract above is prose until something checks it. The lint is the check. It is static — it reads the stylesheet text and nothing else: no rendering, no HTML, no PDF, no document contents. Like every other script here it ships as pseudocode and is built on the spot by the agent that needs it.
+
+Inputs: path to a theme stylesheet.
+
+1. **Read** the stylesheet. Empty input is a hard failure.
+2. **Error** on any external reference — `http://`, `https://`, `@import`, `url(`, `@font-face`. A theme must render identically with the network off.
+3. **Error** on script — `<script` or `javascript:` anywhere in the file. A theme is a stylesheet and nothing else.
+4. **Error** if no `@page` rule is present. Page margins come from the stylesheet; without `@page` the renderer's defaults silently win.
+5. **Warn** on any element of the contract this stylesheet does not style. The document kind may never emit that element — but if it does and the theme ignores it, the output falls back to browser defaults. The judgement stays with the agent: confirm the document's shape, then add the selector or dismiss the warning. Never silently ignore the warning.
+6. **Warn** on a font stack that is not a system stack (a bare family with no fallback chain), and on colour-only signalling — meaning that lives entirely in `color` or `background-color` does not survive printing or an applicant tracking system.
+7. **Report** the file path, every error, every warning. Any error: exit non-zero, naming the file and the rule violated. Warnings alone: exit zero, printed plainly.
+
+**Acceptance line:** lint both shipped themes — `raw/assets/resume-themes/editorial.css` and `raw/assets/cover-letter-themes/editorial.css` — and the run exits zero with no errors. Then lint a copy with one `url(` injected: the run exits non-zero and names the file and the line. The end-of-pipeline e2e runs this check against both shipped themes as one of its first steps; the result is recorded in the Test Log.
+
 ### Skill spec — what the written write-resume skill must do
 
 - **Reads** `resume-master.md`. In tailored mode it also reads the job document in the stage folder and the listing it links to in `raw/jobs/`. Nothing about the user is assumed and nothing is invented — no employer, title, date, metric or technology that the master file does not record.
