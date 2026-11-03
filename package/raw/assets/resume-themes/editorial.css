@@ -1,0 +1,92 @@
+/* Sample resume theme — "editorial".
+   A theme is a print stylesheet. See BLUEPRINT.md Section 3 for the element contract.
+   A4, system fonts, no external resources, legible in monochrome. */
+
+@page {
+  size: A4;
+  margin: 14mm 16mm;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  color: #111;
+  background: #fff;
+  font-size: 9pt;
+  line-height: 1.35;
+  margin: 0;
+  padding: 0;
+}
+
+h1 {
+  font-size: 18pt;
+  margin: 0 0 2px 0;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: #000;
+}
+
+h2 {
+  font-size: 11pt;
+  margin: 4px 0 6px 0;
+  color: #222;
+  border-bottom: 1.5px solid #333;
+  padding-bottom: 2px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  page-break-after: avoid;
+}
+
+h3 {
+  font-size: 10pt;
+  margin: 8px 0 4px 0;
+  color: #000;
+  border-bottom: 1px solid #ddd;
+  padding-bottom: 1px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  page-break-after: avoid;
+}
+
+h4 {
+  font-size: 9.3pt;
+  margin: 6px 0 2px 0;
+  color: #111;
+  page-break-after: avoid;
+}
+
+p {
+  margin: 0 0 4px 0;
+}
+
+p > em {
+  color: #444;
+  font-size: 8.5pt;
+  font-style: normal;
+  display: block;
+  margin-bottom: 3px;
+}
+
+ul {
+  margin: 0 0 5px 0;
+  padding-left: 15px;
+}
+
+li {
+  margin-bottom: 3px;
+  page-break-inside: avoid;
+}
+
+hr {
+  border: 0;
+  border-top: 1px solid #ccc;
+  margin: 6px 0;
+}
+
+a {
+  color: #0044cc;
+  text-decoration: none;
+}
+
+strong {
+  color: #000;
+}

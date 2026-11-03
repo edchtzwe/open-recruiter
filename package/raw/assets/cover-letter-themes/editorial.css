@@ -1,0 +1,133 @@
+/* Sample cover-letter theme — "editorial".
+   A theme is a print stylesheet. See BLUEPRINT.md Section 3 for the element contract.
+   A4, system fonts, no external resources, legible in monochrome. */
+
+@page {
+  size: A4;
+  margin: 18mm 20mm;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  font-size: 9.85pt;
+  line-height: 1.56;
+  color: #111111;
+  background-color: #ffffff;
+  margin: 0;
+  padding: 0;
+  letter-spacing: -0.005em;
+}
+
+h1 {
+  font-size: 21pt;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: #000000;
+  margin: 0 0 3px 0;
+  line-height: 1.1;
+}
+
+/* Contact line beneath the name. */
+h1 + p {
+  font-size: 8.5pt;
+  color: #555555;
+  font-weight: 500;
+  margin: 0 0 10px 0;
+}
+
+h1 + p a {
+  color: #000000;
+  text-decoration: underline;
+  font-weight: 500;
+}
+
+/* Target line: "Application for <role> — <company>". */
+h1 + p + p {
+  background: #fafafa;
+  border: 1px solid #e0e0e0;
+  border-left: 4px solid #000000;
+  border-radius: 2px;
+  padding: 7px 12px;
+  font-size: 8.9pt;
+  color: #111111;
+  margin: 0 0 20px 0;
+  line-height: 1.45;
+}
+
+h1 + p + p strong {
+  color: #000000;
+  font-weight: 700;
+}
+
+h2 {
+  font-size: 11.5pt;
+  font-weight: 700;
+  color: #000000;
+  text-transform: none;
+  letter-spacing: normal;
+  border: none;
+  padding: 0;
+  margin: 18px 0 14px 0;
+}
+
+p {
+  margin: 0 0 16px 0;
+  color: #222222;
+  text-align: justify;
+  text-justify: inter-word;
+}
+
+a {
+  color: #000000;
+  text-decoration: underline;
+}
+
+hr {
+  display: none;
+}
+
+ul {
+  list-style: none;
+  margin: 14px 0 18px 0;
+  padding-left: 0;
+}
+
+li {
+  position: relative;
+  padding-left: 16px;
+  margin-bottom: 11px;
+  line-height: 1.54;
+  color: #222222;
+  text-align: justify;
+  text-justify: inter-word;
+  break-inside: avoid;
+  page-break-inside: avoid;
+}
+
+li::before {
+  content: "\2022";
+  position: absolute;
+  left: 0;
+  top: 0;
+  color: #000000;
+  font-size: 10pt;
+  font-weight: 700;
+}
+
+li strong {
+  color: #000000;
+  font-weight: 700;
+}
+
+/* Signature: the final paragraph of the letter. */
+p:last-of-type {
+  margin-top: 20px;
+  font-size: 10.5pt;
+  color: #000000;
+  text-align: left;
+}
